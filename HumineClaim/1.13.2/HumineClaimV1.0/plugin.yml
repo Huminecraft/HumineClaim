@@ -1,0 +1,12 @@
+name: HumineClaim
+version: 1.0
+author: Aymegike
+main: com.aymegike.humineclaim.HumineClaim
+api-version: 1.13
+depend: [Aypi]
+commands:
+    humineclaim:
+        aliases: hc 
+        description: Help for your claim gestion
+        permission: humineclaim.claim
+        usage: try /<command> <claim-name> [info/add/ban/setowner] [player-name]
