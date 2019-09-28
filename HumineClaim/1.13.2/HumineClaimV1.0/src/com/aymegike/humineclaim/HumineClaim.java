@@ -15,7 +15,7 @@ public class HumineClaim extends JavaPlugin {
 		super.onEnable();
 		
 		System.out.println("--------------------------------");
-		System.out.println("HumineClaim: isLoading");
+		System.out.println("[HumineClaim]: isLoading");
 		System.out.println("--------------------------------");
 		
 		new EventManager(this);

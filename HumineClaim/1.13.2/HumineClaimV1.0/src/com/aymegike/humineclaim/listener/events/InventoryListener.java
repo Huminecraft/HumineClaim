@@ -1,5 +1,6 @@
 package com.aymegike.humineclaim.listener.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -16,7 +17,8 @@ import com.aymegike.humineclaim.utils.ZoneClaim;
 public class InventoryListener implements Listener {
 	
 	@EventHandler
-	public void onItemMove(InventoryMoveItemEvent e) {
+	public void onItemMove(InventoryMoveItemEvent e)
+	{
 		if (isInZoneClaim(e.getDestination().getLocation()) && isBlackList(e.getItem())) {
 			e.setCancelled(true);
 		}
@@ -35,10 +37,31 @@ public class InventoryListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onItemDrag(InventoryClickEvent e) {
-		if (e.getInventory().getType() != InventoryType.CRAFTING) {
-			if (isInZoneClaim(e.getWhoClicked().getLocation()) && e.getCurrentItem() != null && isBlackList(e.getCurrentItem())) {
-				e.setCancelled(true);
+	public void onItemDrag(InventoryClickEvent e)
+	{
+		if (e.getInventory().getType() != InventoryType.CRAFTING)
+		{			
+			if (isInZoneClaim(e.getWhoClicked().getLocation()) )
+			{
+				if (e.getInventory().getType() != InventoryType.SHULKER_BOX)
+				{				
+							if (e.getCurrentItem() != null 
+							&& (HumineClaim.getZoneClaimManager().isLimitedItem(e.getCurrentItem().getType().name())
+							|| HumineClaim.getZoneClaimManager().isForbidenItem(e.getCurrentItem().getType().name()))
+					)
+					{
+						Bukkit.getPlayer(e.getWhoClicked().getName()).sendMessage("Interdiction de poser ca ici !");
+						e.setCancelled(true);
+					}
+				}
+				else
+				{
+					if (e.getCurrentItem() != null && HumineClaim.getZoneClaimManager().isForbidenItem(e.getCurrentItem().getType().name()))
+					{
+						Bukkit.getPlayer(e.getWhoClicked().getName()).sendMessage("Interdiction de poser ca ici !");
+						e.setCancelled(true);
+					}
+				}
 			}
 		}
 	}
@@ -75,6 +98,15 @@ public class InventoryListener implements Listener {
 			}
 		}
 		return false;
+	}
+	
+	private ZoneClaim getZoneClaim(Location location) {
+		for (ZoneClaim zc : HumineClaim.getZoneClaimManager().getZonesClaims()) {
+			if (zc.containLocation(location)) {
+				return zc;
+			}
+		}
+		return null;
 	}
 	
 }

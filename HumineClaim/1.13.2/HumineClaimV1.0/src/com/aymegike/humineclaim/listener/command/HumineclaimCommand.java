@@ -31,14 +31,27 @@ public class HumineclaimCommand implements CommandExecutor, TabCompleter {
 						player.sendMessage(ChatColor.DARK_PURPLE+"Liste des membres de "+ChatColor.WHITE+zc.getName());
 						player.sendMessage(ChatColor.DARK_PURPLE+"~~~~~~~~~~~~~");
 						if (zc.getOwner() != null)
+						{
 						player.sendMessage(ChatColor.DARK_PURPLE+"propriétaire: "+ChatColor.WHITE+zc.getOwner().getName());
+						}
+						else
+						{
+							player.sendMessage(ChatColor.DARK_PURPLE+"propriétaire: "+ChatColor.WHITE+ "Aucun propriétaire.");							
+						}
 						player.sendMessage(ChatColor.DARK_PURPLE+"invité(e)s: ");
 						if (zc.getGuests() != null)
-							for (OfflinePlayer op : zc.getGuests()) {
-								if (op.isOnline()) {
-									player.sendMessage(ChatColor.GREEN+"    - "+ChatColor.WHITE+op.getName());
-								} else {
-									player.sendMessage(ChatColor.RED+"    - "+ChatColor.WHITE+op.getName());
+							if (zc.getGuests().isEmpty())
+							{
+								player.sendMessage(ChatColor.GREEN+" Aucun invité - ");								
+							}
+							else
+							{
+								for (OfflinePlayer op : zc.getGuests()) {
+									if (op.isOnline()) {
+										player.sendMessage(ChatColor.GREEN+"    - "+ChatColor.WHITE+op.getName());
+									} else {
+										player.sendMessage(ChatColor.RED+"    - "+ChatColor.WHITE+op.getName());
+									}
 								}
 							}
 						player.sendMessage(ChatColor.DARK_PURPLE+"~~~~~~~~~~~~~");
@@ -48,10 +61,12 @@ public class HumineclaimCommand implements CommandExecutor, TabCompleter {
 						System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 						if (zc.getOwner() != null)
 							System.out.println("propriétaire: "+zc.getOwner().getName());
+						else
+							System.out.println("pas de propriétaire: "	);							
 						System.out.println("invité(e)s: ");
 						if (zc.getGuests() != null)
 						for (OfflinePlayer op : zc.getGuests()) {
-							if (op.isOnline()) {
+							if (op != null && op.isOnline()) {
 								System.out.println("	- "+op.getName());
 							} else {
 								System.out.println("	- "+op.getName());
@@ -65,17 +80,24 @@ public class HumineclaimCommand implements CommandExecutor, TabCompleter {
 					
 					if (arg.length == 3) {
 						
-						if (Bukkit.getPlayer(arg[2]) != null) {
-							if (sender instanceof Player) {
+						if (Bukkit.getPlayer(arg[2]) != null)
+						{
+							if (sender instanceof Player)
+							{
 								Player player = ((Player) sender).getPlayer();
-								if (player.isOp() || zc.getOwner().getName().equalsIgnoreCase(player.getName())) {
+								if (player.isOp() || zc.getOwner().getName().equalsIgnoreCase(player.getName()))
+								{
 									player.getPlayer().sendMessage(ChatColor.GREEN+"Tu viens d'ajouter "+arg[2]+" du claim "+zc.getName()+" !");
 									if (!zc.containPlayer(Bukkit.getPlayer(arg[2])))
 										zc.addGuests(Bukkit.getPlayer(arg[2]));
-								} else {
-									player.sendMessage(ChatColor.RED+"Tu n'est pas propriétaire du claim "+zc.getName()+". Demande à "+zc.getOwner().getName()+" si il veut bien inviter "+arg[2]+" pour toi.");
 								}
-							} else {
+								else
+								{
+									player.sendMessage(ChatColor.RED+"Tu n'es pas propriétaire du claim "+zc.getName()+". Demande à "+zc.getOwner().getName()+" si il veut bien inviter "+arg[2]+" pour toi.");
+								}
+							}
+							else
+							{
 								System.out.println("Tu viens d'ajouter "+arg[2]+" du claim "+zc.getName()+" !");
 								if (!zc.containPlayer(Bukkit.getPlayer(arg[2])))
 									zc.addGuests(Bukkit.getPlayer(arg[2]));
@@ -156,7 +178,8 @@ public class HumineclaimCommand implements CommandExecutor, TabCompleter {
 							} else {
 									
 								Player target = Bukkit.getPlayer(arg[2]);
-								if (target != null) {
+								if (target != null)
+								{
 									System.out.println("Tu viens de donner les droits de propriété à "+arg[2]+" du claim "+zc.getName()+" !");
 									if (zc.containPlayer(Bukkit.getPlayer(arg[2]))) {
 										zc.addGuests(zc.getOwner());
@@ -164,7 +187,9 @@ public class HumineclaimCommand implements CommandExecutor, TabCompleter {
 										zc.removeGuest(target);
 										target.sendMessage(ChatColor.GREEN+"Félicitation du posède les droits du claim "+zc.getName()+" !");
 									}
-								} else {
+								}
+								else
+								{
 										System.out.println(arg[2]+" n'est pas connecté.");
 								}
 							}
@@ -180,7 +205,14 @@ public class HumineclaimCommand implements CommandExecutor, TabCompleter {
 					} else {
 						return false;
 					}
-				} else {
+				}
+				else if ((arg[1].equalsIgnoreCase("buy")))
+				{
+					Player player = ((Player) sender).getPlayer();
+					zc.buy(player);
+					return true;
+				}
+				else {
 					return false;
 				}
 				

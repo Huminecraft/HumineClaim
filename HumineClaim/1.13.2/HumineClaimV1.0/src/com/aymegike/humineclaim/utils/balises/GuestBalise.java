@@ -21,7 +21,11 @@ public class GuestBalise extends MCBalise {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void customExecute(Player player, XMLFile xmlFile) {
-		this.player = Bukkit.getOfflinePlayer(getString(xmlFile.getScriptManager().compile(getContent(), 0), xmlFile));
+		String playerName = getString(xmlFile.getScriptManager().compile(getContent(), 0), xmlFile);
+		if (!playerName.isEmpty())
+		{
+			this.player = Bukkit.getOfflinePlayer(playerName);
+		}
 	}
 
 	@Override

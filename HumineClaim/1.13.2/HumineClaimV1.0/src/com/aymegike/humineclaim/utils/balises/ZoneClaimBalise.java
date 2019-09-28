@@ -1,6 +1,8 @@
 package com.aymegike.humineclaim.utils.balises;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Location;
@@ -15,6 +17,7 @@ import com.aypi.utils.inter.SurchMcBalise;
 import com.aypi.utils.xml.MCBalise;
 import com.aypi.utils.xml.XMLFile;
 import com.aypi.utils.xml.balises.LocationBalise;
+import com.aymegike.humineclaim.utils.LimitedBlocInfos;
 
 public class ZoneClaimBalise extends MCBalise {
 
@@ -26,6 +29,9 @@ public class ZoneClaimBalise extends MCBalise {
 	private ArrayList<OfflinePlayer> members;
 	private int price;
 	private String name;
+	private Location signLocation;
+	private Map<String, Integer> limitedBlocsCounters;
+	private boolean shulkerIsPlaced;
 	
 	public ZoneClaimBalise() {
 		super(NAME);
@@ -34,15 +40,16 @@ public class ZoneClaimBalise extends MCBalise {
 		members = new ArrayList<OfflinePlayer>();
 		square = null;
 		name = generateRandomName();
+		signLocation = null;
+		limitedBlocsCounters = new HashMap<String, Integer>();
+		shulkerIsPlaced = false;
 	}
 
 	@Override
 	public void customExecute(Player player, XMLFile xmlFile) {
 		Location c1 = null;
 		Location c2 = null;
-		
-		
-		
+				
 		for (MCBalise mcBalise : getChildrens()) {
 			
 			mcBalise.surchMcBalise(new LocationBalise(), new SurchMcBalise() {
@@ -53,9 +60,12 @@ public class ZoneClaimBalise extends MCBalise {
 				}
 				
 			});
-			
-			
-			if (mcBalise instanceof LocationBalise) {
+
+			if (mcBalise instanceof SignBalise) {
+				mcBalise.directExecute(player, xmlFile);
+				signLocation = ((SignBalise) mcBalise).GetLocation();
+			}		
+			else if (mcBalise instanceof LocationBalise) {
 				mcBalise.directExecute(player, xmlFile);
 				for (MCBalise lb : mcBalise.getChildrens()) {
 					
@@ -69,34 +79,36 @@ public class ZoneClaimBalise extends MCBalise {
 					}
 					
 				}
-				if (c1 != null && c2 != null)
-					square = new Square(c1, c2);
-			}
-			
-			if (mcBalise instanceof GuestsBalise) {
+			}	
+			else if (mcBalise instanceof GuestsBalise) {
 				mcBalise.directExecute(player, xmlFile);
 				members = ((GuestsBalise) mcBalise).getPlayers();
-			}
-			
-			if (mcBalise instanceof OwnerBalise) {
+			}	
+			else if (mcBalise instanceof OwnerBalise) {
 				mcBalise.directExecute(player, xmlFile);
 				owner = ((OwnerBalise) mcBalise).getPlayer();
-			}
-			
-			if (mcBalise instanceof PriceBalise) {
+			}	
+			else if (mcBalise instanceof PriceBalise) {
 				mcBalise.directExecute(player, xmlFile);
 				price = ((PriceBalise) mcBalise).getPrice();
-			}
-			
-			if (mcBalise instanceof NameBalise) {
+			}	
+			else if (mcBalise instanceof NameBalise) {
 				mcBalise.directExecute(player, xmlFile);
 				name = ((NameBalise) mcBalise).getClaimName();
 			}
-			
-			
+			else if (mcBalise instanceof LimitedBlocsBalise)
+			{
+				mcBalise.directExecute(player, xmlFile);
+				limitedBlocsCounters = ((LimitedBlocsBalise) mcBalise).getLimitedBlocCounters();
+			}
+			else if (mcBalise instanceof PlacedShulkerBalise)
+			{
+				mcBalise.directExecute(player, xmlFile);
+				shulkerIsPlaced = ((PlacedShulkerBalise) mcBalise).getShulkerNumber() > 0;
+			}
 		}
 		
-		HumineClaim.getZoneClaimManager().addZoneClaim(new ZoneClaim(name, square, owner, members, price, xmlFile));
+		HumineClaim.getZoneClaimManager().addZoneClaim(new ZoneClaim(name, c1, c2, owner, members, price, signLocation, limitedBlocsCounters, shulkerIsPlaced, xmlFile));
 		
 	}
 

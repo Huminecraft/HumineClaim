@@ -9,4 +9,4 @@ commands:
         aliases: hc 
         description: Help for your claim gestion
         permission: humineclaim.claim
-        usage: try /<command> <claim-name> [info/add/ban/setowner] [player-name]
+        usage: try /<command> <claim-name> [info/add/ban/setowner/buy] [player-name]
