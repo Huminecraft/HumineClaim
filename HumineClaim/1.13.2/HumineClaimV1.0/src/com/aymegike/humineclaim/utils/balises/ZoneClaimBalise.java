@@ -12,22 +12,20 @@ import org.w3c.dom.NamedNodeMap;
 
 import com.aymegike.humineclaim.HumineClaim;
 import com.aymegike.humineclaim.utils.ZoneClaim;
-import com.aypi.utils.Square;
 import com.aypi.utils.inter.SurchMcBalise;
 import com.aypi.utils.xml.MCBalise;
 import com.aypi.utils.xml.XMLFile;
+import com.aypi.utils.xml.balises.IDBalise;
 import com.aypi.utils.xml.balises.LocationBalise;
-import com.aymegike.humineclaim.utils.LimitedBlocInfos;
 
 public class ZoneClaimBalise extends MCBalise {
 
 	public static final String NAME = "zone-claim";
-	
-	private Square square;
-	
+		
 	private OfflinePlayer owner;
 	private ArrayList<OfflinePlayer> members;
 	private int price;
+	private int ID;
 	private String name;
 	private Location signLocation;
 	private Map<String, Integer> limitedBlocsCounters;
@@ -35,10 +33,10 @@ public class ZoneClaimBalise extends MCBalise {
 	
 	public ZoneClaimBalise() {
 		super(NAME);
+		ID = -1;
 		price = 0;
 		owner = null;
 		members = new ArrayList<OfflinePlayer>();
-		square = null;
 		name = generateRandomName();
 		signLocation = null;
 		limitedBlocsCounters = new HashMap<String, Integer>();
@@ -96,6 +94,10 @@ public class ZoneClaimBalise extends MCBalise {
 				mcBalise.directExecute(player, xmlFile);
 				name = ((NameBalise) mcBalise).getClaimName();
 			}
+			else if (mcBalise instanceof IDBalise) {
+				mcBalise.directExecute(player, xmlFile);
+				ID = ((IDBalise) mcBalise).getID();
+			}
 			else if (mcBalise instanceof LimitedBlocsBalise)
 			{
 				mcBalise.directExecute(player, xmlFile);
@@ -108,7 +110,7 @@ public class ZoneClaimBalise extends MCBalise {
 			}
 		}
 		
-		HumineClaim.getZoneClaimManager().addZoneClaim(new ZoneClaim(name, c1, c2, owner, members, price, signLocation, limitedBlocsCounters, shulkerIsPlaced, xmlFile));
+		HumineClaim.getZoneClaimManager().addZoneClaim(new ZoneClaim(ID, name, c1, c2, owner, members, price, signLocation, limitedBlocsCounters, shulkerIsPlaced, xmlFile));
 		
 	}
 

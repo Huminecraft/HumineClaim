@@ -4,12 +4,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.aymegike.humineclaim.listener.CommandManager;
 import com.aymegike.humineclaim.listener.EventManager;
+import com.aymegike.humineclaim.listener.command.LeaveClaimCommand;
+import com.aymegike.humineclaim.listener.command.ShowMenuCommand;
+import com.aymegike.humineclaim.menu.ClaimMenuManager;
 import com.aymegike.humineclaim.utils.XMLManager;
 import com.aymegike.humineclaim.utils.ZoneClaimManager;
 
 public class HumineClaim extends JavaPlugin {
 	
 	private static ZoneClaimManager zoneClaimManager;
+	private static ClaimMenuManager menuManager;
 	
 	public void onEnable() {
 		super.onEnable();
@@ -21,7 +25,10 @@ public class HumineClaim extends JavaPlugin {
 		new EventManager(this);
 		new XMLManager();
 		new CommandManager(this);
+		this.getCommand("claim").setExecutor(new ShowMenuCommand());
+		this.getCommand("leave").setExecutor(new LeaveClaimCommand());
 		zoneClaimManager = new ZoneClaimManager();
+		menuManager = new ClaimMenuManager();
 	}
 	
 	public void onDisable() {
@@ -31,5 +38,12 @@ public class HumineClaim extends JavaPlugin {
 	public static ZoneClaimManager getZoneClaimManager() {
 		return zoneClaimManager;
 	}
-
+	
+	public static ClaimMenuManager getClaimMenuManager() {
+		return menuManager;
+	}
+	
+	public HumineClaim getPluginInstance() {
+		return this;
+	}
 }

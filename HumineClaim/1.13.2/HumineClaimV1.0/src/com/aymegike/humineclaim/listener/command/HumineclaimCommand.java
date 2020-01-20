@@ -1,231 +1,43 @@
 package com.aymegike.humineclaim.listener.command;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import com.aymegike.humineclaim.HumineClaim;
 import com.aymegike.humineclaim.utils.ZoneClaim;
 
-public class HumineclaimCommand implements CommandExecutor, TabCompleter {
+public class HumineclaimCommand implements CommandExecutor/*, TabCompleter*/ {
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] arg) {
-		
-		if (arg.length >= 2) {
-			ZoneClaim zc = HumineClaim.getZoneClaimManager().getZoneClaim(arg[0]);
-			if (zc != null) {
-				 
-				if (arg[1].equalsIgnoreCase("info")) {
-					
-					if (sender instanceof Player) {
-						Player player = ((Player) sender).getPlayer();
-						player.sendMessage(ChatColor.DARK_PURPLE+"Liste des membres de "+ChatColor.WHITE+zc.getName());
-						player.sendMessage(ChatColor.DARK_PURPLE+"~~~~~~~~~~~~~");
-						if (zc.getOwner() != null)
-						{
-						player.sendMessage(ChatColor.DARK_PURPLE+"propriétaire: "+ChatColor.WHITE+zc.getOwner().getName());
-						}
-						else
-						{
-							player.sendMessage(ChatColor.DARK_PURPLE+"propriétaire: "+ChatColor.WHITE+ "Aucun propriétaire.");							
-						}
-						player.sendMessage(ChatColor.DARK_PURPLE+"invité(e)s: ");
-						if (zc.getGuests() != null)
-							if (zc.getGuests().isEmpty())
-							{
-								player.sendMessage(ChatColor.GREEN+" Aucun invité - ");								
-							}
-							else
-							{
-								for (OfflinePlayer op : zc.getGuests()) {
-									if (op.isOnline()) {
-										player.sendMessage(ChatColor.GREEN+"    - "+ChatColor.WHITE+op.getName());
-									} else {
-										player.sendMessage(ChatColor.RED+"    - "+ChatColor.WHITE+op.getName());
-									}
-								}
-							}
-						player.sendMessage(ChatColor.DARK_PURPLE+"~~~~~~~~~~~~~");
-						
-					} else {
-						System.out.println("Liste des membres de "+zc.getName());
-						System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-						if (zc.getOwner() != null)
-							System.out.println("propriétaire: "+zc.getOwner().getName());
-						else
-							System.out.println("pas de propriétaire: "	);							
-						System.out.println("invité(e)s: ");
-						if (zc.getGuests() != null)
-						for (OfflinePlayer op : zc.getGuests()) {
-							if (op != null && op.isOnline()) {
-								System.out.println("	- "+op.getName());
-							} else {
-								System.out.println("	- "+op.getName());
-							}
-						}
-						System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-					}
-					
-					return true;
-				} else if (arg[1].equalsIgnoreCase("add")) {
-					
-					if (arg.length == 3) {
-						
-						if (Bukkit.getPlayer(arg[2]) != null)
-						{
-							if (sender instanceof Player)
-							{
-								Player player = ((Player) sender).getPlayer();
-								if (player.isOp() || zc.getOwner().getName().equalsIgnoreCase(player.getName()))
-								{
-									player.getPlayer().sendMessage(ChatColor.GREEN+"Tu viens d'ajouter "+arg[2]+" du claim "+zc.getName()+" !");
-									if (!zc.containPlayer(Bukkit.getPlayer(arg[2])))
-										zc.addGuests(Bukkit.getPlayer(arg[2]));
-								}
-								else
-								{
-									player.sendMessage(ChatColor.RED+"Tu n'es pas propriétaire du claim "+zc.getName()+". Demande à "+zc.getOwner().getName()+" si il veut bien inviter "+arg[2]+" pour toi.");
-								}
-							}
-							else
-							{
-								System.out.println("Tu viens d'ajouter "+arg[2]+" du claim "+zc.getName()+" !");
-								if (!zc.containPlayer(Bukkit.getPlayer(arg[2])))
-									zc.addGuests(Bukkit.getPlayer(arg[2]));
-							}
-						} else {
-							if (sender instanceof Player) {
-								((Player) sender).getPlayer().sendMessage(ChatColor.RED+"Le joueur "+arg[2]+" n'as pas l'air d'être connecté.");
-							} else {
-								System.out.println("Le joueur "+arg[2]+" n'as pas l'air d'être connecté.");
-							}
-						}
-						return true;
-					} else {
-						return false;
-					}
-					
-				} else if (arg[1].equalsIgnoreCase("ban")) {
-					
-					if (arg.length == 3) {
-						
-						if (zc.containPlayer(arg[2])) {
-							if (sender instanceof Player) {
-								Player player = ((Player) sender).getPlayer();
-								if (player.isOp() || zc.getOwner().getName().equalsIgnoreCase(player.getName())) {
-									player.getPlayer().sendMessage(ChatColor.GREEN+"Tu viens de banir "+arg[2]+" du claim "+zc.getName()+" !");
-									if (zc.containPlayer(arg[2]))
-										zc.removeGuest(arg[2]);
-								} else {
-									player.sendMessage(ChatColor.RED+"Tu n'est pas propriétaire du claim "+zc.getName()+". Demande à "+zc.getOwner().getName()+" si il veut bien banir "+arg[2]+" pour toi.");
-								}
-							} else {
-								System.out.println("Tu viens de banir "+arg[2]+" du claim "+zc.getName()+" !");
-								if (zc.containPlayer(arg[2]))
-									zc.removeGuest(arg[2]);
-							}
-						} else {
-							if (sender instanceof Player) {
-								((Player) sender).getPlayer().sendMessage(ChatColor.RED+"Le joueur "+arg[2]+" ne fait pas parti du claim "+zc.getName());
-							} else {
-								System.out.println("Le joueur "+arg[2]+" ne fait pas parti du claim "+zc.getName());
-							}
-						}
-						return true;
-					} else {
-						return false;
-					}
-				} else if (arg[1].equalsIgnoreCase("setowner")) {
-					if (arg.length == 3) {
-						
-						if (zc.containPlayer(arg[2])) {
-							
-							
-							if (sender instanceof Player) {
-								Player player = ((Player) sender).getPlayer();
-								
-								if (player.isOp() || zc.getOwner().getName().equalsIgnoreCase(player.getName())) {
-									
-									Player target = Bukkit.getPlayer(arg[2]);
-									if (target != null) {
-										player.getPlayer().sendMessage(ChatColor.GREEN+"Tu viens de donner les droits de propriété à "+arg[2]+" du claim "+zc.getName()+" !");
-										if (zc.containPlayer(Bukkit.getPlayer(arg[2]))) {
-											zc.addGuests(zc.getOwner());
-											zc.setOwner(target);
-											zc.removeGuest(target);
-											target.sendMessage(ChatColor.GREEN+"Félicitation du posède les droits du claim "+zc.getName()+" !");
-										}
-									} else {
-										player.sendMessage(ChatColor.RED+arg[2]+" n'est pas connecté.");
-									}
-									
-									
-								} else {
-									player.sendMessage(ChatColor.RED+"Tu n'est pas propriétaire du claim "+zc.getName()+". Demande à "+zc.getOwner().getName()+" si il veut bien donner les droit de propriété à "+arg[2]+" pour toi.");
-								}
-								
-								
-								
-							} else {
-									
-								Player target = Bukkit.getPlayer(arg[2]);
-								if (target != null)
-								{
-									System.out.println("Tu viens de donner les droits de propriété à "+arg[2]+" du claim "+zc.getName()+" !");
-									if (zc.containPlayer(Bukkit.getPlayer(arg[2]))) {
-										zc.addGuests(zc.getOwner());
-										zc.setOwner(target);
-										zc.removeGuest(target);
-										target.sendMessage(ChatColor.GREEN+"Félicitation du posède les droits du claim "+zc.getName()+" !");
-									}
-								}
-								else
-								{
-										System.out.println(arg[2]+" n'est pas connecté.");
-								}
-							}
-						
-						} else {
-							if (sender instanceof Player) {
-								((Player) sender).getPlayer().sendMessage(ChatColor.RED+"Le joueur "+arg[2]+" ne fait pas parti du claim "+zc.getName());
-							} else {
-								System.out.println("Le joueur "+arg[2]+" ne fait pas parti du claim "+zc.getName());
-							}
-						}
-						return true;
-					} else {
-						return false;
-					}
-				}
-				else if ((arg[1].equalsIgnoreCase("buy")))
+	public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] arg)
+	{		
+		if (arg.length >= 2)
+		{
+			ZoneClaim zc = HumineClaim.getZoneClaimManager().getZoneClaim(Integer.parseInt(arg[0]));
+			if (zc != null)
+			{
+				if ((arg[1].equalsIgnoreCase("buy")))
 				{
 					Player player = ((Player) sender).getPlayer();
 					zc.buy(player);
 					return true;
 				}
-				else {
+				else
+				{
 					return false;
-				}
-				
-			} else {
-				return false;
+				}				
 			}
-			
-		}
-		
+			else
+			{
+				return false;
+			}			
+		}		
 		return false;
 	}
 
-	@Override
+	/*@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String lbl, String[] arg) {
 		
 		if (arg.length == 0 || arg.length == 1) {
@@ -309,8 +121,5 @@ public class HumineclaimCommand implements CommandExecutor, TabCompleter {
 		}
 		
 		return actions;
-	}
-	
-	
-
+	}*/
 }

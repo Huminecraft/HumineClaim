@@ -1,12 +1,25 @@
 name: HumineClaim
 version: 1.0
-author: Aymegike
+author: Luffyys
 main: com.aymegike.humineclaim.HumineClaim
-api-version: 1.13
+api-version: 1.15
 depend: [Aypi]
 commands:
-    humineclaim:
-        aliases: hc 
-        description: Help for your claim gestion
-        permission: humineclaim.claim
-        usage: try /<command> <claim-name> [info/add/ban/setowner/buy] [player-name]
+  humineclaim:
+    aliases: hc
+    description: Help for your claim gestion
+    permission: humineclaim.claim
+    usage:
+  claim:
+    aliases: propriete
+    description: Help for your claim gestion
+    permission:
+    usage:
+  leave:
+    aliases: sortir
+    description: Help for your claim gestion
+    permission:
+    usage:
+  buy:
+    aliases: acheter
+    description: Allow to buy a claim

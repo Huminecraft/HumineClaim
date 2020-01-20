@@ -5,9 +5,10 @@ import com.aymegike.humineclaim.listener.command.HumineclaimCommand;
 
 public class CommandManager {
 	
-	public CommandManager(HumineClaim pl) {
+	public CommandManager(HumineClaim pl)
+	{
 		pl.getCommand("humineclaim").setExecutor(new HumineclaimCommand());
-		pl.getCommand("humineclaim").setTabCompleter(new HumineclaimCommand());
+		//pl.getCommand("humineclaim").setTabCompleter(new HumineclaimCommand());
 	}
 
 }

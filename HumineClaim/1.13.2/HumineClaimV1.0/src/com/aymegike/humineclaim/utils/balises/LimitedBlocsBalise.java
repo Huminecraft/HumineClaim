@@ -6,7 +6,6 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 import org.w3c.dom.NamedNodeMap;
 
-import com.aymegike.humineclaim.utils.LimitedBlocInfos;
 import com.aypi.utils.xml.MCBalise;
 import com.aypi.utils.xml.XMLFile;
 

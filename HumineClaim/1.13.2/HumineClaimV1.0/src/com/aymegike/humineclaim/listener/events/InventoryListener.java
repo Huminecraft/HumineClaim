@@ -45,12 +45,12 @@ public class InventoryListener implements Listener {
 			{
 				if (e.getInventory().getType() != InventoryType.SHULKER_BOX)
 				{				
-							if (e.getCurrentItem() != null 
+					if (e.getCurrentItem() != null
 							&& (HumineClaim.getZoneClaimManager().isLimitedItem(e.getCurrentItem().getType().name())
 							|| HumineClaim.getZoneClaimManager().isForbidenItem(e.getCurrentItem().getType().name()))
 					)
 					{
-						Bukkit.getPlayer(e.getWhoClicked().getName()).sendMessage("Interdiction de poser ca ici !");
+						Bukkit.getPlayer(e.getWhoClicked().getName()).sendMessage("Interdiction de poser ça ici !");
 						e.setCancelled(true);
 					}
 				}
@@ -58,7 +58,7 @@ public class InventoryListener implements Listener {
 				{
 					if (e.getCurrentItem() != null && HumineClaim.getZoneClaimManager().isForbidenItem(e.getCurrentItem().getType().name()))
 					{
-						Bukkit.getPlayer(e.getWhoClicked().getName()).sendMessage("Interdiction de poser ca ici !");
+						Bukkit.getPlayer(e.getWhoClicked().getName()).sendMessage("Interdiction de poser ça ici !");
 						e.setCancelled(true);
 					}
 				}
@@ -98,15 +98,6 @@ public class InventoryListener implements Listener {
 			}
 		}
 		return false;
-	}
-	
-	private ZoneClaim getZoneClaim(Location location) {
-		for (ZoneClaim zc : HumineClaim.getZoneClaimManager().getZonesClaims()) {
-			if (zc.containLocation(location)) {
-				return zc;
-			}
-		}
-		return null;
 	}
 	
 }

@@ -1,5 +1,7 @@
 package com.aymegike.humineclaim.utils.balises;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -18,13 +20,14 @@ public class GuestBalise extends MCBalise {
 		super(NAME);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public void customExecute(Player player, XMLFile xmlFile) {
-		String playerName = getString(xmlFile.getScriptManager().compile(getContent(), 0), xmlFile);
-		if (!playerName.isEmpty())
+	public void customExecute(Player player, XMLFile xmlFile)
+	{
+		String idString = getString(xmlFile.getScriptManager().compile(getContent(), 0), xmlFile);
+		if (!idString.isEmpty())
 		{
-			this.player = Bukkit.getOfflinePlayer(playerName);
+			UUID playerID = UUID.fromString(idString);
+			this.player = Bukkit.getOfflinePlayer(playerID);
 		}
 	}
 
