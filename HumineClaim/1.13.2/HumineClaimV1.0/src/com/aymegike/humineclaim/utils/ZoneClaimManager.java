@@ -231,6 +231,18 @@ public class ZoneClaimManager {
 		return m_limitedBlocsDeclarations.containsKey(item);
 	}
 	
+	public boolean isLocationInZoneClaim(Location loc)
+	{
+		for (ZoneClaim zc : m_zoneClaims)
+		{
+			if (zc.containLocation(loc))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean isProtectedLocation(Location loc)
 	{
 		return m_protectedLocations.contains(loc);

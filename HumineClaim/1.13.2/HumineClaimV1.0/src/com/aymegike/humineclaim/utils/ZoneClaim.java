@@ -154,6 +154,13 @@ public class ZoneClaim extends Zone {
 						return;
 					}					
 				}
+
+				if (block.getType() == Material.DRAGON_EGG)
+				{
+					player.sendMessage("Tu ne peux pas poser ça ici ! ça serait un peu trop facile non ?");
+					e.setCancelled(true);
+					return;
+				}
 				
 				if (block.getType() == Material.FIRE)
 				{
